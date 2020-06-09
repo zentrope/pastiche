@@ -10,23 +10,9 @@ import Cocoa
 
 import os.log
 
-//extension Notification.Name {
-//    static let newPasteDidArrive = Notification.Name("newPasteDidArrive")
-//}
-
 class AppEnvironment {
 
     static var shared = AppEnvironment()
-
-//    struct PasteItem: Equatable {
-//        var timestamp = Date()
-//        var item: String
-//        var name: String
-//
-//        static func == (lhs: PasteItem, rhs: PasteItem) -> Bool {
-//            return lhs.item == rhs.item
-//        }
-//    }
 
     var mostRecentRunningApplication: NSRunningApplication?
 
@@ -36,7 +22,6 @@ class AppEnvironment {
         }
     }
 
-    //var pasteItems = [PasteItem]()
     private var isStarted = false
 
     private init() {}
@@ -59,21 +44,6 @@ class AppEnvironment {
         AppData.shared.upsert(paste: value) { error in
             print("ERROR: \(error)")
         }
-        /*
-        let name = value.flattened().trimmed().sized(100)
-        let paste = PasteItem(item: value, name: name)
-
-        // Even if the paste is a duplicate, it should always
-        // appear as the first element. So, re-copying text
-        // will always move it to the top of the list with a
-        // new timestamp.
-
-        if pasteItems.contains(paste) {
-            pasteItems.removeAll { $0 == paste }
-        }
-        pasteItems.insert(paste, at: 0)
-        NotificationCenter.default.post(name: .newPasteDidArrive, object: self)
-        */
     }
 
     // MARK: - Implementation Details
@@ -128,22 +98,3 @@ class AppEnvironment {
         }
     }
 }
-
-//extension String {
-//
-//    func trimmed() -> String {
-//        trimmingCharacters(in: .whitespacesAndNewlines)
-//    }
-//
-//    func flattened() -> String {
-//        if let regex = try? NSRegularExpression(pattern: "\\s+", options: []) {
-//            return regex.stringByReplacingMatches(in: self, options: .withTransparentBounds, range: NSMakeRange(0, self.count), withTemplate: " ")
-//        }
-//        return self
-//    }
-//
-//    func sized(_ n: Int) -> String {
-//        // FIXME: Reconsider ellipses once we've moved to a UI
-//        count <= n ? self : String(self[startIndex...index(startIndex, offsetBy: n)])
-//    }
-//}

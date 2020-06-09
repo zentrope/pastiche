@@ -36,7 +36,7 @@ class ViewController: NSViewController {
     }
 }
 
-final class MasterViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+final class MasterViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, NSFetchedResultsControllerDelegate {
 
     private lazy var tableView = ViewKitSetup(GridClipTableView()) {
         let column = NSTableColumn()
@@ -72,11 +72,6 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         tableView.dataSource = self
         tableView.delegate = self
         tableView.reloadData()
-
-//        NotificationCenter.default.addObserver(forName: .newPasteDidArrive, object: nil, queue: .main) { [weak self] _ in
-//            print("Got a new paste.")
-//            self?.tableView.reloadData()
-//        }
     }
 
     override func viewDidAppear() {
@@ -140,9 +135,8 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         }
 
     }
-}
 
-extension MasterViewController: NSFetchedResultsControllerDelegate {
+    // MARK: - Fetched Results Delegate
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.reloadData()
