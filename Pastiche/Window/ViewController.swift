@@ -79,6 +79,26 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         tableView.reloadData()
     }
 
+    override func keyDown(with event: NSEvent) {
+        let selection = tableView.selectedRow
+        guard selection >= 0, let paste = fetchController?.fetchedObjects?[selection] else {
+            return
+        }
+        switch event.keyCode {
+        case 36: // return
+            print("RETURN (should send paste '\(paste.name ?? "")' to other app)")
+        case 53:
+            // escape
+            break
+        case 51, 117: // 51 = backspace, 117 = delete
+            AppData.shared.delete(paste)
+            tableView.selectRowIndexes([selection], byExtendingSelection: false)
+        default:
+            print("key.code: \(event.keyCode)")
+            break
+        }
+    }
+
     // MARK: - Datasource
 
     func numberOfRows(in tableView: NSTableView) -> Int {
@@ -110,7 +130,7 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
 
     // MARK: - Cell View
 
-    class MasterCell: NSLayerView {
+    class MasterCell: NSTableCellView {
 
         static let identifier = NSUserInterfaceItemIdentifier("MasterCell")
 
@@ -139,7 +159,9 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
     // MARK: - Fetched Results Delegate
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        self.tableView.reloadData()
+        let selection = tableView.selectedRowIndexes
+        tableView.reloadData()
+        tableView.selectRowIndexes(selection, byExtendingSelection: false)
     }
 }
 

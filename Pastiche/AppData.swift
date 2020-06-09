@@ -48,6 +48,13 @@ class AppData: NSPersistentContainer {
         }
     }
 
+    func delete(_ paste: Paste) {
+        viewContext.perform {
+            self.viewContext.delete(paste)
+            self.save() { print("delete save error: \($0)")}
+        }
+    }
+
     func save(_ completion: ((Error) -> Void)? = nil) {
         do {
             try self.viewContext.save()
