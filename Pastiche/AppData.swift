@@ -41,7 +41,7 @@ class AppData: NSPersistentContainer {
                     pasteMO.dateUpdated = Date()
                 } else {
                     let pasteMO = Paste(context: self.viewContext)
-                    pasteMO.id = self.hashOf(paste: rawValue)
+                    pasteMO.id = hash
                     pasteMO.value = rawValue
                     pasteMO.name = rawValue.flattened().trimmed().sized(100)
                     pasteMO.dateUpdated = Date()
