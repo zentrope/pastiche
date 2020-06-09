@@ -86,17 +86,29 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         }
         switch event.keyCode {
         case 36: // return
+            AppEnvironment.shared.returnToCaller()
             print("RETURN (should send paste '\(paste.name ?? "")' to other app)")
         case 53:
             // escape
             break
         case 51, 117: // 51 = backspace, 117 = delete
+            detailView?.set(detail: "")
             AppData.shared.delete(paste)
-            tableView.selectRowIndexes([selection], byExtendingSelection: false)
+            tableView.selectRowIndexes([nextSelection(given: selection)], byExtendingSelection: false)
         default:
             print("key.code: \(event.keyCode)")
             break
         }
+    }
+
+    private func nextSelection(given row: Int) -> Int {
+        if row == 0 {
+            return row
+        }
+        if row >= (tableView.numberOfRows - 1) {
+            return row - 1;
+        }
+        return row
     }
 
     // MARK: - Datasource
@@ -159,8 +171,11 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
     // MARK: - Fetched Results Delegate
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        let selection = tableView.selectedRowIndexes
+        var selection = tableView.selectedRowIndexes
         tableView.reloadData()
+        if selection.isEmpty {
+            selection.insert(0)
+        }
         tableView.selectRowIndexes(selection, byExtendingSelection: false)
     }
 }
