@@ -8,6 +8,10 @@
 
 import Foundation
 import CoreData
+import CryptoKit
+import os.log
+
+fileprivate let logger = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "AppData")
 
 class AppData: NSPersistentContainer {
     static let shared = AppData()
@@ -28,12 +32,12 @@ class AppData: NSPersistentContainer {
     }
 
     func upsert(paste rawValue: String, _ completion: @escaping (Error) -> Void) {
-        findPaste(value: rawValue) { (result) in
-            switch result {
-            case .failure(let error):
-                completion(error)
-            case .success(let pasteMO):
-                if let pasteMO = pasteMO {
+        viewContext.perform {
+            do {
+                let hash = self.hashOf(paste: rawValue)
+                let request: NSFetchRequest<Paste> = Paste.fetchRequest()
+                request.predicate = NSPredicate(format: "id == %@", hash);
+                if let pasteMO = try self.viewContext.fetch(request).first {
                     pasteMO.dateUpdated = Date()
                 } else {
                     let pasteMO = Paste(context: self.viewContext)
@@ -42,8 +46,11 @@ class AppData: NSPersistentContainer {
                     pasteMO.name = rawValue.flattened().trimmed().sized(100)
                     pasteMO.dateUpdated = Date()
                 }
-
                 self.save(completion)
+            } catch {
+                DispatchQueue.main.async {
+                    completion(error)
+                }
             }
         }
     }
@@ -77,24 +84,15 @@ class AppData: NSPersistentContainer {
         return controller
     }
 
-    private func findPaste(value: String, _ completion: @escaping (Result<Paste?, Error>) -> Void) {
-        viewContext.perform {
-            let hash = NSNumber(value: self.hashOf(paste: value))
-            let request: NSFetchRequest<Paste> = Paste.fetchRequest()
-            do {
-                request.predicate = NSPredicate(format: "id == %@", hash);
-                let paste = try self.viewContext.fetch(request).first
-                completion(Result.success(paste))
-            } catch {
-                completion(Result.failure(error))
-            }
-        }
+    private func hashOf(paste: String) -> String {
+        let data = paste.data(using: .utf8)!
+        return SHA256.hash(data: data).hex
     }
+}
 
-    private func hashOf(paste: String) -> Int64 {
-        var hasher = Hasher()
-        hasher.combine(paste)
-        return Int64(hasher.finalize())
+extension Digest {
+    var hex: String {
+        self.map { String(format: "%02hhx", $0) }.joined()
     }
 }
 
@@ -112,7 +110,6 @@ extension String {
     }
 
     func sized(_ n: Int) -> String {
-        // FIXME: Reconsider ellipses once we've moved to a UI
         count <= n ? self : String(self[startIndex...index(startIndex, offsetBy: n)])
     }
 }
