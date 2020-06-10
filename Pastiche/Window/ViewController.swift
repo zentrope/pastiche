@@ -86,8 +86,8 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         }
         switch event.keyCode {
         case 36: // return
+            AppEnvironment.shared.send(paste: paste)
             AppEnvironment.shared.returnToCaller()
-            print("RETURN (should send paste '\(paste.name ?? "")' to other app)")
         case 53:
             // escape
             break

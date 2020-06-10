@@ -7,8 +7,9 @@
 //
 
 import Cocoa
-
 import os.log
+
+fileprivate let logger = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "AppEnvironment")
 
 class AppEnvironment {
 
@@ -35,6 +36,18 @@ class AppEnvironment {
         isStarted = true
     }
 
+    func send(paste: Paste) {
+        guard let app = mostRecentRunningApplication,
+            let value = paste.value else { return }
+
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(value, forType: .string)
+        if app.activate(options: [.activateIgnoringOtherApps]) {
+            self.forgePasteEvent()
+        }
+    }
+
     func returnToCaller() {
         mostRecentRunningApplication?.activate(options: [.activateIgnoringOtherApps])
         NSApp.hide(self)
@@ -47,6 +60,16 @@ class AppEnvironment {
     }
 
     // MARK: - Implementation Details
+
+    private func forgePasteEvent () {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let event1 = CGEvent(keyboardEventSource: nil, virtualKey: 0x09, keyDown: true); // cmd-v down
+            event1?.flags = CGEventFlags.maskCommand;
+            event1?.post(tap: CGEventTapLocation.cghidEventTap);
+            let event2 = CGEvent(keyboardEventSource: nil, virtualKey: 0x09, keyDown: false) // cmd-v up
+            event2?.post(tap: CGEventTapLocation.cghidEventTap)
+        }
+    }
 
     private func updatePasteboard(_ pasteboardCount: Int) -> Int {
         let pasteboard = NSPasteboard.general

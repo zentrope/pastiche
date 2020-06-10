@@ -224,6 +224,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 53BD1F46246FBD37007380CB /* Build configuration list for PBXNativeTarget "Pastiche" */;
 			buildPhases = (
+				53859A032490CAF6002FC63D /* ShellScript */,
 				53BD1F34246FBD35007380CB /* Sources */,
 				53BD1F35246FBD35007380CB /* Frameworks */,
 				53BD1F36246FBD35007380CB /* Resources */,
@@ -294,6 +295,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		53859A032490CAF6002FC63D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		530FA07C2484718B0023C44F /* Sources */ = {
@@ -534,6 +555,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5Y5389EUC6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Pastiche/Info.plist;
@@ -541,6 +563,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15.5;
+				MARKETING_VERSION = 2020.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zentrope.Pastiche;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -556,6 +580,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5Y5389EUC6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Pastiche/Info.plist;
@@ -563,6 +588,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15.5;
+				MARKETING_VERSION = 2020.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zentrope.Pastiche;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
