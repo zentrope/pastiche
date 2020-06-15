@@ -15,8 +15,6 @@ class AppEnvironment {
 
     static var shared = AppEnvironment()
 
-    var mostRecentRunningApplication: NSRunningApplication?
-
     var isTrusted = false {
         didSet {
             os_log("%{public}s", log: logger, "app is \(isTrusted ? "trusted" : "not trusted")")
@@ -31,29 +29,18 @@ class AppEnvironment {
         guard !isStarted else { return }
 
         refreshPasteboard()
-        listenForAppActivations()
         requestAccessibilityPermissions()
         isStarted = true
     }
 
     func send(paste: Paste) {
-        guard //let app = mostRecentRunningApplication,
-            let value = paste.value else { return }
+        guard let value = paste.value else { return }
 
-        NSRunningApplication.current.hide()
+        NSApp.hide(self)
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(value, forType: .string)
         self.forgePasteEvent()
-//        if app.activate(options: [.activateIgnoringOtherApps]) {
-//            self.forgePasteEvent()
-//        }
-
-    }
-
-    func returnToCaller() {
-        mostRecentRunningApplication?.activate(options: [.activateIgnoringOtherApps])
-        NSApp.hide(self)
     }
 
     private func addPasteItem(_ value: String) {
@@ -65,7 +52,9 @@ class AppEnvironment {
     // MARK: - Implementation Details
 
     private func forgePasteEvent () {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        // For some reason, doing this delays just enough for the other app to be ready to
+        // receive events.
+        DispatchQueue.main.async {
             let event1 = CGEvent(keyboardEventSource: nil, virtualKey: 0x09, keyDown: true); // cmd-v down
             event1?.flags = CGEventFlags.maskCommand;
             event1?.post(tap: CGEventTapLocation.cghidEventTap);
@@ -90,29 +79,11 @@ class AppEnvironment {
         return pasteboard.changeCount
     }
 
-    private func updateRecentActiveApp(_ info: [AnyHashable:Any]?) {
-        if let app = info?["NSWorkspaceApplicationKey"] as? NSRunningApplication,
-            let local = app.localizedName, !(Bundle.main.bundleIdentifier ?? "").hasSuffix(local) {
-
-            mostRecentRunningApplication = app
-            return
-        }
-    }
-
     private func requestAccessibilityPermissions() {
         let checkOptPrompt = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
         let options = [checkOptPrompt : true]
 
         isTrusted = AXIsProcessTrustedWithOptions(options as CFDictionary?)
-    }
-
-    private func listenForAppActivations() {
-        let center = NSWorkspace.shared.notificationCenter
-        let notification = NSWorkspace.didActivateApplicationNotification
-        center.addObserver(forName: notification, object: nil, queue: .main) { [weak self] msg in
-            guard let self = self else { return }
-            self.updateRecentActiveApp(msg.userInfo)
-        }
     }
 
     func refreshPasteboard(_ pasteboardCount: Int = 0) {
