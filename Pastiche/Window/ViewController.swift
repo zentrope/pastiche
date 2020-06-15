@@ -40,7 +40,7 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
 
     private lazy var tableView = ViewKitSetup(GridClipTableView()) {
         let column = NSTableColumn()
-        column.identifier = MasterCell.identifier
+        column.identifier = PasteTitleCell.identifier
         $0.addTableColumn(column)
         $0.headerView = nil
         $0.usesAutomaticRowHeights = true
@@ -141,10 +141,10 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 
         guard let pasteMO = fetchController?.fetchedObjects?[row] else { return nil }
-        if let item = tableView.makeView(withIdentifier: MasterCell.identifier, owner: self) as? MasterCell {
+        if let item = tableView.makeView(withIdentifier: PasteTitleCell.identifier, owner: self) as? PasteTitleCell {
             return item.set(paste: pasteMO)
         }
-        return MasterCell().set(paste: pasteMO)
+        return PasteTitleCell().set(paste: pasteMO)
     }
 
     func tableViewSelectionDidChange(_ notification: Notification) {
@@ -161,14 +161,13 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
 
     // MARK: - Cell View
 
-    class MasterCell: NSTableCellView {
+    class PasteTitleCell: NSTableCellView {
 
-        static let identifier = NSUserInterfaceItemIdentifier("MasterCell")
+        static let identifier = NSUserInterfaceItemIdentifier("PasteTitleCell")
 
-        private var label = ViewKitSetup(NSTextField(wrappingLabelWithString: "Test")) {
+        private var label = ViewKitSetup(NSTextField(wrappingLabelWithString: "…")) {
             $0.maximumNumberOfLines = 1
             $0.lineBreakMode = .byTruncatingTail
-            $0.font = .systemFont(ofSize: 14.0, weight: .medium)
             $0.isSelectable = false
         }
 
@@ -176,7 +175,7 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
 
         convenience init() {
             self.init(frame: .zero)
-            fill(subview: label, margin: 8)
+            fill(subview: label, top: 4, leading: 6, bottom: -4, trailing: -6)
         }
 
         func set(paste: Paste) -> Self {
@@ -184,7 +183,6 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
             label.stringValue = paste.name ?? "Unknown"
             return self
         }
-
     }
 
     // MARK: - Fetched Results Delegate
