@@ -44,7 +44,8 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         $0.addTableColumn(column)
         $0.headerView = nil
         $0.usesAutomaticRowHeights = true
-        $0.gridStyleMask = [.dashedHorizontalGridLineMask]
+        $0.gridStyleMask = []
+        $0.usesAlternatingRowBackgroundColors = true
     }
 
     private lazy var scrollView = ViewKitSetup(NSScrollView()) {
@@ -194,11 +195,17 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
 
 final class DetailViewController: NSViewController {
 
+    private lazy var noWrappedLines = true
+
     private lazy var scrollView = ViewKitSetup(NSScrollView()) {
         $0.documentView = textView
         $0.hasVerticalScroller = true
         $0.borderType = .noBorder
         $0.focusRingType = .none
+
+        if noWrappedLines {
+            $0.hasHorizontalScroller = true
+        }
     }
 
     private lazy var textView = ViewKitSetup(NSTextView()) {
@@ -208,6 +215,14 @@ final class DetailViewController: NSViewController {
         $0.isSelectable = false
         $0.autoresizingMask = [.width, .height]
         $0.isRichText = false
+
+        if noWrappedLines {
+            $0.isHorizontallyResizable = true
+            $0.textContainer?.widthTracksTextView = false
+            let infiniteSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+            $0.maxSize = infiniteSize
+            $0.textContainer?.size = infiniteSize
+        }
     }
 
     override func loadView() {
