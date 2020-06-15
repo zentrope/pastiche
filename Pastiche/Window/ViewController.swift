@@ -84,19 +84,22 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
         guard selection >= 0, let paste = fetchController?.fetchedObjects?[selection] else {
             return
         }
-        switch event.keyCode {
-        case 36: // return
+
+        switch Int(event.keyCode) {
+
+        case AppHotKey.RETURN:
             AppEnvironment.shared.send(paste: paste)
-            AppEnvironment.shared.returnToCaller()
-        case 53:
-            // escape
-            break
-        case 51, 117: // 51 = backspace, 117 = delete
+
+        case AppHotKey.ESCAPE:
+            NSRunningApplication.current.hide()
+
+        case AppHotKey.DELETE, AppHotKey.FORWARD_DELETE:
             detailView?.set(detail: "")
             AppData.shared.delete(paste)
             tableView.selectRowIndexes([nextSelection(given: selection)], byExtendingSelection: false)
+
         default:
-            print("key.code: \(event.keyCode)")
+            //print("key.code: \(Int(event.keyCode))")
             break
         }
     }

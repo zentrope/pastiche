@@ -6,6 +6,7 @@
 //  Copyright © 2020 Zentrope. All rights reserved.
 //
 
+import Carbon
 import Cocoa
 import os.log
 
@@ -23,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         os_log("%{public}s", log: logger, "Application started.")
         windowController.showWindow(self)
         appEnvironment.start()
-        listenForHotKey()
+        AppHotKey.listenForHotKey()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -42,12 +43,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
-    private func listenForHotKey() {
-        let mask: NSEvent.ModifierFlags = [.command, .shift, .option]
-        NSEvent.addGlobalMonitorForEvents(matching: .keyDown) {
-            if $0.modifierFlags.intersection(mask) == mask && $0.keyCode == 42 {
-                NSRunningApplication.current.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
-            }
-        }
-    }
 }

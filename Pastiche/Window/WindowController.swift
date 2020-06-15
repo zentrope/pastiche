@@ -39,6 +39,5 @@ class WindowController: NSWindowController {
 extension WindowController: NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
-        print("main window closed")
     }
 }

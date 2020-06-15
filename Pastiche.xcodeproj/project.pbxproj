@@ -34,6 +34,7 @@
 		53BD1F3C246FBD35007380CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53BD1F3B246FBD35007380CB /* AppDelegate.swift */; };
 		53BD1F3E246FBD37007380CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53BD1F3D246FBD37007380CB /* Assets.xcassets */; };
 		53BD1F41246FBD37007380CB /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53BD1F3F246FBD37007380CB /* MainMenu.xib */; };
+		53DE03222496F3C200E9D808 /* AppHotKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DE03212496F3C200E9D808 /* AppHotKey.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		53BD1F40246FBD37007380CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		53BD1F42246FBD37007380CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		53BD1F43246FBD37007380CB /* Pastiche.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pastiche.entitlements; sourceTree = "<group>"; };
+		53DE03212496F3C200E9D808 /* AppHotKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHotKey.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				533C587D248F362C0060E9BA /* AppData.swift */,
 				53BD1F3B246FBD35007380CB /* AppDelegate.swift */,
 				530FA07924842D280023C44F /* AppEnvironment.swift */,
+				53DE03212496F3C200E9D808 /* AppHotKey.swift */,
 				530FA07824842B770023C44F /* Configuration */,
 				530FA071248428510023C44F /* Window */,
 			);
@@ -348,6 +351,7 @@
 				530FA0512484281B0023C44F /* WindowController.swift in Sources */,
 				533C5881248F36EB0060E9BA /* Pastiche.xcdatamodeld in Sources */,
 				53BD1F3C246FBD35007380CB /* AppDelegate.swift in Sources */,
+				53DE03222496F3C200E9D808 /* AppHotKey.swift in Sources */,
 				530FA073248428660023C44F /* ViewController.swift in Sources */,
 				533C587E248F362C0060E9BA /* AppData.swift in Sources */,
 			);

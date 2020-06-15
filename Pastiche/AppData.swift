@@ -25,7 +25,7 @@ class AppData: NSPersistentContainer {
             self.viewContext.undoManager = nil
 
             if let error = error {
-                print("\(error)")
+                os_log("%{public}s", log: logger, type: .error, "\(error)")
                 fatalError("\(error)")
             }
         }

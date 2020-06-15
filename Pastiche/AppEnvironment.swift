@@ -19,7 +19,7 @@ class AppEnvironment {
 
     var isTrusted = false {
         didSet {
-            print("app is \(isTrusted ? "trusted" : "not trusted")")
+            os_log("%{public}s", log: logger, "app is \(isTrusted ? "trusted" : "not trusted")")
         }
     }
 
@@ -37,15 +37,18 @@ class AppEnvironment {
     }
 
     func send(paste: Paste) {
-        guard let app = mostRecentRunningApplication,
+        guard //let app = mostRecentRunningApplication,
             let value = paste.value else { return }
 
+        NSRunningApplication.current.hide()
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(value, forType: .string)
-        if app.activate(options: [.activateIgnoringOtherApps]) {
-            self.forgePasteEvent()
-        }
+        self.forgePasteEvent()
+//        if app.activate(options: [.activateIgnoringOtherApps]) {
+//            self.forgePasteEvent()
+//        }
+
     }
 
     func returnToCaller() {
@@ -55,7 +58,7 @@ class AppEnvironment {
 
     private func addPasteItem(_ value: String) {
         AppData.shared.upsert(paste: value) { error in
-            print("ERROR: \(error)")
+            os_log("%{public}s", log: logger, type: .error, "\(error)")
         }
     }
 
@@ -92,7 +95,6 @@ class AppEnvironment {
             let local = app.localizedName, !(Bundle.main.bundleIdentifier ?? "").hasSuffix(local) {
 
             mostRecentRunningApplication = app
-            print("activated: '\(local)'")
             return
         }
     }
