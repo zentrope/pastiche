@@ -71,12 +71,28 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
 
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.reloadData()
+        reset()
     }
 
     override func viewDidAppear() {
         super.viewDidAppear()
+        reset()
+    }
+
+    override func viewWillDisappear() {
+        super.viewWillDisappear()
+        // Reset selection to top, assuming you want the latest paste first,
+        // or the one you just pasted.
+        tableView.selectRowIndexes([0], byExtendingSelection: false)
+    }
+
+    func reset() {
+        var selection = tableView.selectedRowIndexes
         tableView.reloadData()
+        if selection.isEmpty {
+            selection.insert(0)
+        }
+        tableView.selectRowIndexes(selection, byExtendingSelection: false)
     }
 
     override func keyDown(with event: NSEvent) {
@@ -174,12 +190,7 @@ final class MasterViewController: NSViewController, NSTableViewDataSource, NSTab
     // MARK: - Fetched Results Delegate
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        var selection = tableView.selectedRowIndexes
-        tableView.reloadData()
-        if selection.isEmpty {
-            selection.insert(0)
-        }
-        tableView.selectRowIndexes(selection, byExtendingSelection: false)
+        reset()
     }
 }
 
